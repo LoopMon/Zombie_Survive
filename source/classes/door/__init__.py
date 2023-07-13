@@ -6,11 +6,12 @@ class Door(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self.image = pygame.image.load('source/imgs/door.png')
-        self.image = pygame.transform.scale(self.image, (128, 128))
+        self.image = pygame.transform.scale(self.image, (100, 128))
 
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.planks = []
+        self.currentPlank = 0
         self.max_planks = 3
         self.count_planks = self.max_planks
 
@@ -20,4 +21,22 @@ class Door(pygame.sprite.Sprite):
 
     def drawPlanks(self, canvas: pygame.Surface):
         for plank in self.planks:
-            canvas.blit(plank.image, (plank.rect.x, plank.rect.y))
+            if plank.visible:
+                canvas.blit(plank.image, (plank.rect.x, plank.rect.y))
+        
+    def getPlank(self):
+        if self.planks[self.currentPlank].life > 0:
+            return self.currentPlank
+
+        self.currentPlank += 1  
+        if self.currentPlank >= len(self.planks):
+            self.currentPlank = 0
+            return self.currentPlank 
+
+        return self.currentPlank 
+    
+    def checkPlanks(self):
+        for plank in self.planks:
+            plank.breakUp()
+        
+        
